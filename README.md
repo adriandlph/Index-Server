@@ -56,3 +56,16 @@
 ## API Documentation (Swagger)
 
 Once running, visit: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+## Releases
+
+### v1.0.0
+
+- Division, Department, Project and Product CRUD
+- SQLite persistence with JPA + Hibernate
+- REST API with ApiResponse wrapper
+- Layered architecture: RestApi → Controller → Repository → Entity
+- Field validation with nullable constraints and version format (v00.00.000)
+- Swagger UI documentation
+- Security: permitAll + CSRF disabled
+- Logging to file with rolling policy
