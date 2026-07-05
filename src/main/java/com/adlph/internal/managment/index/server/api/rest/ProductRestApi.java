@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,10 +36,15 @@ public class ProductRestApi {
     private ProductControllerInterface productController;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> findAllProducts() {
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> findAllProducts(
+            @RequestParam(required = false) Long divisionId,
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Long projectId,
+            @RequestParam(required = false) Integer count,
+            @RequestParam(required = false) Integer page) {
         LOG.trace("---> findAllProducts()");
         try {
-            List<ProductResponse> products = productController.findAllProducts().stream()
+            List<ProductResponse> products = productController.findAllProducts(divisionId, departmentId, projectId, count, page).stream()
                 .map(ProductRestApi::toResponse).toList();
             LOG.trace("<--- findAllProducts()");
             return ResponseEntity.ok(ApiResponse.ok(products));

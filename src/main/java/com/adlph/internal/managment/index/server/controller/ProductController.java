@@ -27,10 +27,10 @@ public class ProductController implements ProductControllerInterface {
     private ProjectRepository projectRepository;
 
     @Override
-    public List<ProductVO> findAllProducts() throws ServerErrorException {
+    public List<ProductVO> findAllProducts(Long divisionId, Long departmentId, Long projectId, Integer count, Integer page) throws ServerErrorException {
         LOG.debug("Finding all products");
         try {
-            return productRepository.findAll().stream()
+            return productRepository.findAll(divisionId, departmentId, projectId, count, page).stream()
                 .map(ProductController::Product2ProductVO)
                 .toList();
         } catch (Exception e) {

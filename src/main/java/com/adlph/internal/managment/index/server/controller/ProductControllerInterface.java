@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProductControllerInterface {
 
-    List<ProductVO> findAllProducts() throws ServerErrorException;
+    List<ProductVO> findAllProducts(Long divisionId, Long departmentId, Long projectId, Integer count, Integer page) throws ServerErrorException;
 
     ProductVO getProductById(ProductVO productVO) throws ServerErrorException, InvalidDataException;
 
