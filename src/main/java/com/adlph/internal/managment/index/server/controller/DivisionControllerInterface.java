@@ -10,6 +10,8 @@ public interface DivisionControllerInterface {
 
     List<DivisionVO> findAllDivisions(Integer count, Integer page) throws ServerErrorException;
 
+    long countDivisions() throws ServerErrorException;
+
     DivisionVO getDivisionById(DivisionVO divisionVO) throws ServerErrorException, InvalidDataException;
 
     DivisionVO createDivision(DivisionVO divisionVO) throws ServerErrorException, InvalidDataException;

@@ -2,6 +2,7 @@ package com.adlph.internal.managment.index.server.api.rest;
 
 import com.adlph.internal.managment.index.server.api.rest.data.ApiResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.CreateProjectRequest;
+import com.adlph.internal.managment.index.server.api.rest.data.PageCountResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.ProjectResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.UpdateProjectRequest;
 import com.adlph.internal.managment.index.server.controller.ProjectControllerInterface;
@@ -49,6 +50,27 @@ public class ProjectRestApi {
             return ResponseEntity.ok(ApiResponse.ok(projects));
         } catch (ServerErrorException ex) {
             LOG.trace("<--- findAllProjects()");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(-1, "Server error"));
+        }
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<ApiResponse<PageCountResponse>> getProjectPages(
+            @RequestParam(required = false) Long divisionId,
+            @RequestParam(required = false) Long departmentId,
+            @RequestParam(required = false) Integer count) {
+        LOG.trace("---> getProjectPages()");
+        try {
+            long totalCount = projectController.countProjects(divisionId, departmentId);
+            int totalPages = count != null && count > 0
+                ? (int) Math.ceil((double) totalCount / count)
+                : (totalCount > 0 ? 1 : 0);
+            LOG.trace("<--- getProjectPages()");
+            return ResponseEntity.ok(ApiResponse.ok(
+                PageCountResponse.builder().totalCount(totalCount).totalPages(totalPages).build()));
+        } catch (ServerErrorException ex) {
+            LOG.trace("<--- getProjectPages()");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error(-1, "Server error"));
         }

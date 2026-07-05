@@ -3,6 +3,7 @@ package com.adlph.internal.managment.index.server.api.rest;
 import com.adlph.internal.managment.index.server.api.rest.data.ApiResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.CreateDivisionRequest;
 import com.adlph.internal.managment.index.server.api.rest.data.DivisionResponse;
+import com.adlph.internal.managment.index.server.api.rest.data.PageCountResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.UpdateDivisionRequest;
 import com.adlph.internal.managment.index.server.controller.DivisionControllerInterface;
 import com.adlph.internal.managment.index.server.data.vo.DivisionVO;
@@ -47,6 +48,25 @@ public class DivisionRestApi {
             return ResponseEntity.ok(ApiResponse.ok(divisions));
         } catch (ServerErrorException ex) {
             LOG.trace("<--- findAllDivisions()");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(-1, "Server error"));
+        }
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<ApiResponse<PageCountResponse>> getDivisionPages(
+            @RequestParam(required = false) Integer count) {
+        LOG.trace("---> getDivisionPages()");
+        try {
+            long totalCount = divisionController.countDivisions();
+            int totalPages = count != null && count > 0
+                ? (int) Math.ceil((double) totalCount / count)
+                : (totalCount > 0 ? 1 : 0);
+            LOG.trace("<--- getDivisionPages()");
+            return ResponseEntity.ok(ApiResponse.ok(
+                PageCountResponse.builder().totalCount(totalCount).totalPages(totalPages).build()));
+        } catch (ServerErrorException ex) {
+            LOG.trace("<--- getDivisionPages()");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error(-1, "Server error"));
         }

@@ -40,6 +40,17 @@ public class DepartmentController implements DepartmentControllerInterface {
     }
 
     @Override
+    public long countDepartments(Long divisionId) throws ServerErrorException {
+        LOG.debug("Counting all departments");
+        try {
+            return departmentRepository.count(divisionId);
+        } catch (Exception e) {
+            LOG.error("Error counting departments", e);
+            throw new ServerErrorException(-1, "Server error");
+        }
+    }
+
+    @Override
     public DepartmentVO getDepartmentById(DepartmentVO departmentVO) throws ServerErrorException, InvalidDataException {
         LOG.debug("Finding department by id: {}", departmentVO.getId());
         try {

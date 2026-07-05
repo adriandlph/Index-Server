@@ -73,6 +73,27 @@ public class ProductRepository {
         return em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult();
     }
 
+    public long count(Long divisionId, Long departmentId, Long projectId) {
+        if (divisionId == null && departmentId == null && projectId == null) return count();
+        StringBuilder jpql = new StringBuilder("SELECT COUNT(p) FROM Product p WHERE 1=1");
+        if (projectId != null) {
+            jpql.append(" AND p.project.id = :projectId");
+        } else if (departmentId != null) {
+            jpql.append(" AND p.project.department.id = :departmentId");
+        } else if (divisionId != null) {
+            jpql.append(" AND p.project.department.division.id = :divisionId");
+        }
+        var query = em.createQuery(jpql.toString(), Long.class);
+        if (projectId != null) {
+            query.setParameter("projectId", projectId);
+        } else if (departmentId != null) {
+            query.setParameter("departmentId", departmentId);
+        } else if (divisionId != null) {
+            query.setParameter("divisionId", divisionId);
+        }
+        return query.getSingleResult();
+    }
+
     public boolean existsById(Long id) {
         return findById(id).isPresent();
     }

@@ -35,6 +35,17 @@ public class DivisionController implements DivisionControllerInterface {
     }
 
     @Override
+    public long countDivisions() throws ServerErrorException {
+        LOG.debug("Counting all divisions");
+        try {
+            return divisionRepository.count();
+        } catch (Exception e) {
+            LOG.error("Error counting divisions", e);
+            throw new ServerErrorException(-1, "Server error");
+        }
+    }
+
+    @Override
     public DivisionVO getDivisionById(DivisionVO divisionVO) throws ServerErrorException, InvalidDataException {
         LOG.debug("Finding division by id: {}", divisionVO.getId());
         try {

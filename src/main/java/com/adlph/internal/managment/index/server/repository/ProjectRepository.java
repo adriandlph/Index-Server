@@ -69,6 +69,23 @@ public class ProjectRepository {
         return em.createQuery("SELECT COUNT(p) FROM Project p", Long.class).getSingleResult();
     }
 
+    public long count(Long divisionId, Long departmentId) {
+        if (divisionId == null && departmentId == null) return count();
+        StringBuilder jpql = new StringBuilder("SELECT COUNT(p) FROM Project p WHERE 1=1");
+        if (departmentId != null) {
+            jpql.append(" AND p.department.id = :departmentId");
+        } else if (divisionId != null) {
+            jpql.append(" AND p.department.division.id = :divisionId");
+        }
+        var query = em.createQuery(jpql.toString(), Long.class);
+        if (departmentId != null) {
+            query.setParameter("departmentId", departmentId);
+        } else if (divisionId != null) {
+            query.setParameter("divisionId", divisionId);
+        }
+        return query.getSingleResult();
+    }
+
     public boolean existsById(Long id) {
         return findById(id).isPresent();
     }

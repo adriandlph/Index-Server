@@ -3,6 +3,7 @@ package com.adlph.internal.managment.index.server.api.rest;
 import com.adlph.internal.managment.index.server.api.rest.data.ApiResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.CreateDepartmentRequest;
 import com.adlph.internal.managment.index.server.api.rest.data.DepartmentResponse;
+import com.adlph.internal.managment.index.server.api.rest.data.PageCountResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.UpdateDepartmentRequest;
 import com.adlph.internal.managment.index.server.controller.DepartmentControllerInterface;
 import com.adlph.internal.managment.index.server.data.vo.DepartmentVO;
@@ -48,6 +49,26 @@ public class DepartmentRestApi {
             return ResponseEntity.ok(ApiResponse.ok(departments));
         } catch (ServerErrorException ex) {
             LOG.trace("<--- findAllDepartments()");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(-1, "Server error"));
+        }
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<ApiResponse<PageCountResponse>> getDepartmentPages(
+            @RequestParam(required = false) Long divisionId,
+            @RequestParam(required = false) Integer count) {
+        LOG.trace("---> getDepartmentPages()");
+        try {
+            long totalCount = departmentController.countDepartments(divisionId);
+            int totalPages = count != null && count > 0
+                ? (int) Math.ceil((double) totalCount / count)
+                : (totalCount > 0 ? 1 : 0);
+            LOG.trace("<--- getDepartmentPages()");
+            return ResponseEntity.ok(ApiResponse.ok(
+                PageCountResponse.builder().totalCount(totalCount).totalPages(totalPages).build()));
+        } catch (ServerErrorException ex) {
+            LOG.trace("<--- getDepartmentPages()");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error(-1, "Server error"));
         }

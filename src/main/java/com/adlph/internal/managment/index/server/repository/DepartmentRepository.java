@@ -65,6 +65,13 @@ public class DepartmentRepository {
         return em.createQuery("SELECT COUNT(d) FROM Department d", Long.class).getSingleResult();
     }
 
+    public long count(Long divisionId) {
+        if (divisionId == null) return count();
+        return em.createQuery("SELECT COUNT(d) FROM Department d WHERE d.division.id = :divisionId", Long.class)
+            .setParameter("divisionId", divisionId)
+            .getSingleResult();
+    }
+
     public boolean existsById(Long id) {
         return findById(id).isPresent();
     }

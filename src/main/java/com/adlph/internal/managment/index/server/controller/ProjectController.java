@@ -40,6 +40,17 @@ public class ProjectController implements ProjectControllerInterface {
     }
 
     @Override
+    public long countProjects(Long divisionId, Long departmentId) throws ServerErrorException {
+        LOG.debug("Counting all projects");
+        try {
+            return projectRepository.count(divisionId, departmentId);
+        } catch (Exception e) {
+            LOG.error("Error counting projects", e);
+            throw new ServerErrorException(-1, "Server error");
+        }
+    }
+
+    @Override
     public ProjectVO getProjectById(ProjectVO projectVO) throws ServerErrorException, InvalidDataException {
         LOG.debug("Finding project by id: {}", projectVO.getId());
         try {

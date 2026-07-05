@@ -10,6 +10,8 @@ public interface ProductControllerInterface {
 
     List<ProductVO> findAllProducts(Long divisionId, Long departmentId, Long projectId, Integer count, Integer page) throws ServerErrorException;
 
+    long countProducts(Long divisionId, Long departmentId, Long projectId) throws ServerErrorException;
+
     ProductVO getProductById(ProductVO productVO) throws ServerErrorException, InvalidDataException;
 
     ProductVO createProduct(ProductVO productVO) throws ServerErrorException, InvalidDataException;

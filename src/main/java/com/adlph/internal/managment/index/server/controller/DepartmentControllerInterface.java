@@ -10,6 +10,8 @@ public interface DepartmentControllerInterface {
 
     List<DepartmentVO> findAllDepartments(Long divisionId, Integer count, Integer page) throws ServerErrorException;
 
+    long countDepartments(Long divisionId) throws ServerErrorException;
+
     DepartmentVO getDepartmentById(DepartmentVO departmentVO) throws ServerErrorException, InvalidDataException;
 
     DepartmentVO createDepartment(DepartmentVO departmentVO) throws ServerErrorException, InvalidDataException;

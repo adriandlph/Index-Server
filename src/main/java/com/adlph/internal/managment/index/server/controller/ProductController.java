@@ -40,6 +40,17 @@ public class ProductController implements ProductControllerInterface {
     }
 
     @Override
+    public long countProducts(Long divisionId, Long departmentId, Long projectId) throws ServerErrorException {
+        LOG.debug("Counting all products");
+        try {
+            return productRepository.count(divisionId, departmentId, projectId);
+        } catch (Exception e) {
+            LOG.error("Error counting products", e);
+            throw new ServerErrorException(-1, "Server error");
+        }
+    }
+
+    @Override
     public ProductVO getProductById(ProductVO productVO) throws ServerErrorException, InvalidDataException {
         LOG.debug("Finding product by id: {}", productVO.getId());
         try {
