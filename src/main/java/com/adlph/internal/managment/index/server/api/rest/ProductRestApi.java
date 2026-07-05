@@ -83,7 +83,7 @@ public class ProductRestApi {
             }
             ProductVO vo = productController.createProduct(
                 ProductVO.builder().name(request.getName()).version(request.getVersion())
-                    .publishDate(request.getPublishDate()).descritpion(request.getDescritpion())
+                    .publishDate(request.getPublishDate()).description(request.getDescritpion())
                     .projectId(request.getProjectId()).build());
             LOG.trace("<--- createProduct()");
             return ResponseEntity.ok(ApiResponse.ok(toResponse(vo)));
@@ -110,7 +110,7 @@ public class ProductRestApi {
             }
             ProductVO vo = productController.updateProduct(
                 ProductVO.builder().id(id).name(request.getName()).version(request.getVersion())
-                    .publishDate(request.getPublishDate()).descritpion(request.getDescritpion())
+                    .publishDate(request.getPublishDate()).description(request.getDescritpion())
                     .projectId(request.getProjectId()).build());
             LOG.trace("<--- updateProduct()");
             return ResponseEntity.ok(ApiResponse.ok(toResponse(vo)));
@@ -146,7 +146,7 @@ public class ProductRestApi {
     private static ProductResponse toResponse(ProductVO vo) {
         return ProductResponse.builder()
             .id(vo.getId()).name(vo.getName()).version(vo.getVersion())
-            .publishDate(vo.getPublishDate()).descritpion(vo.getDescritpion())
+            .publishDate(vo.getPublishDate()).description(vo.getDescritpion())
             .projectId(vo.getProjectId())
             .build();
     }

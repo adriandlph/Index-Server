@@ -1,6 +1,6 @@
 package com.adlph.internal.managment.index.server.api.rest.data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import lombok.Setter;
 public class UpdateProductRequest {
     private String name;
     private String version;
-    private LocalDate publishDate;
-    private String descritpion;
+    private LocalDateTime publishDate;
+    private String description;
     private Long projectId;
 }
