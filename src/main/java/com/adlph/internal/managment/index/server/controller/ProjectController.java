@@ -27,10 +27,10 @@ public class ProjectController implements ProjectControllerInterface {
     private DepartmentRepository departmentRepository;
 
     @Override
-    public List<ProjectVO> findAllProjects() throws ServerErrorException {
+    public List<ProjectVO> findAllProjects(Long divisionId, Long departmentId, Integer count, Integer page) throws ServerErrorException {
         LOG.debug("Finding all projects");
         try {
-            return projectRepository.findAll().stream()
+            return projectRepository.findAll(divisionId, departmentId, count, page).stream()
                 .map(ProjectController::Project2ProjectVO)
                 .toList();
         } catch (Exception e) {

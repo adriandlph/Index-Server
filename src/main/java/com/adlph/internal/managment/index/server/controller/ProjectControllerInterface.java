@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ProjectControllerInterface {
 
-    List<ProjectVO> findAllProjects() throws ServerErrorException;
+    List<ProjectVO> findAllProjects(Long divisionId, Long departmentId, Integer count, Integer page) throws ServerErrorException;
 
     ProjectVO getProjectById(ProjectVO projectVO) throws ServerErrorException, InvalidDataException;
 

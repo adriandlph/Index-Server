@@ -32,7 +32,27 @@ public class ProjectRepository {
     }
 
     public List<Project> findAll() {
-        return em.createQuery("SELECT p FROM Project p", Project.class).getResultList();
+        return findAll(null, null, null, null);
+    }
+
+    public List<Project> findAll(Long divisionId, Long departmentId, Integer count, Integer page) {
+        StringBuilder jpql = new StringBuilder("SELECT p FROM Project p WHERE 1=1");
+        if (departmentId != null) {
+            jpql.append(" AND p.department.id = :departmentId");
+        } else if (divisionId != null) {
+            jpql.append(" AND p.department.division.id = :divisionId");
+        }
+        var query = em.createQuery(jpql.toString(), Project.class);
+        if (departmentId != null) {
+            query.setParameter("departmentId", departmentId);
+        } else if (divisionId != null) {
+            query.setParameter("divisionId", divisionId);
+        }
+        if (count != null) {
+            query.setFirstResult(page != null ? count * page : 0);
+            query.setMaxResults(count);
+        }
+        return query.getResultList();
     }
 
     @Transactional
