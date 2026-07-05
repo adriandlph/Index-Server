@@ -18,7 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
@@ -35,9 +35,9 @@ public class Product implements Data {
     private String name;
     @Column(length = 20, nullable = false)
     private String version;
-    private LocalDate publishDate;
+    private LocalDateTime publishDate;
     @Column(length = 500)
-    private String descritpion;
+    private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
     private Project project;

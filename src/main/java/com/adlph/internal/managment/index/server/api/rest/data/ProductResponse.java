@@ -1,6 +1,6 @@
 package com.adlph.internal.managment.index.server.api.rest.data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class ProductResponse {
     private Long id;
     private String name;
     private String version;
-    private LocalDate publishDate;
-    private String descritpion;
+    private LocalDateTime publishDate;
+    private String description;
     private Long projectId;
 }
