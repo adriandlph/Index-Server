@@ -133,7 +133,7 @@ public class ProductController implements ProductControllerInterface {
         productVO.setName(product.getName());
         productVO.setVersion(product.getVersion());
         productVO.setPublishDate(product.getPublishDate());
-        productVO.setDescritpion(product.getDescritpion());
+        productVO.setDescription(product.getDescription());
         productVO.setProjectId(product.getProject() != null ? product.getProject().getId() : null);
         return productVO;
     }
@@ -148,7 +148,7 @@ public class ProductController implements ProductControllerInterface {
         product.setName(productVO.getName());
         product.setVersion(productVO.getVersion());
         product.setPublishDate(productVO.getPublishDate());
-        product.setDescritpion(productVO.getDescritpion());
+        product.setDescription(productVO.getDescription());
         return product;
     }
 }
