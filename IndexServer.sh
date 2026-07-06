@@ -7,14 +7,15 @@ cat << "EOF"
 EOF
 
 echo ""
-echo "  1) clean"
-echo "  2) build"
-echo "  3) package"
-echo "  4) run"
-echo "  5) generate-keystore"
+echo "  1) Clean"
+echo "  2) Build"
+echo "  3) Package"
+echo "  4) Start server"
+echo "  5) Execute tests"
+echo "  6) Generate keystore for SSL (HTTPS)"
 echo ""
 echo "════════════════════════════════"
-read -p "  Select an option (1-5): " option
+read -p "  Select an option (1-6): " option
 
 case $option in
   1)
@@ -34,6 +35,10 @@ case $option in
     mvn spring-boot:run
     ;;
   5)
+    echo "Running: mvn test"
+    mvn test
+    ;;
+  6)
     echo "Generating SSL keystore..."
     if [ -f secrets/ssl-key.p12 ]; then
       echo "A keystore already exists in secrets/"
