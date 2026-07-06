@@ -32,7 +32,16 @@ public class DivisionRepository {
     }
 
     public List<Division> findAll() {
-        return em.createQuery("SELECT d FROM Division d", Division.class).getResultList();
+        return findAll(null, null);
+    }
+
+    public List<Division> findAll(Integer count, Integer page) {
+        var query = em.createQuery("SELECT d FROM Division d", Division.class);
+        if (count != null) {
+            query.setFirstResult(page != null ? count * page : 0);
+            query.setMaxResults(count);
+        }
+        return query.getResultList();
     }
 
     @Transactional

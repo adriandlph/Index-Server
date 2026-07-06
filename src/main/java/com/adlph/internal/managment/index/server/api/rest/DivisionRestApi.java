@@ -3,6 +3,7 @@ package com.adlph.internal.managment.index.server.api.rest;
 import com.adlph.internal.managment.index.server.api.rest.data.ApiResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.CreateDivisionRequest;
 import com.adlph.internal.managment.index.server.api.rest.data.DivisionResponse;
+import com.adlph.internal.managment.index.server.api.rest.data.PageCountResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.UpdateDivisionRequest;
 import com.adlph.internal.managment.index.server.controller.DivisionControllerInterface;
 import com.adlph.internal.managment.index.server.data.vo.DivisionVO;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,15 +37,36 @@ public class DivisionRestApi {
     private DivisionControllerInterface divisionController;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<DivisionResponse>>> findAllDivisions() {
+    public ResponseEntity<ApiResponse<List<DivisionResponse>>> findAllDivisions(
+            @RequestParam(required = false) Integer count,
+            @RequestParam(required = false) Integer page) {
         LOG.trace("---> findAllDivisions()");
         try {
-            List<DivisionResponse> divisions = divisionController.findAllDivisions().stream()
+            List<DivisionResponse> divisions = divisionController.findAllDivisions(count, page).stream()
                 .map(DivisionRestApi::toResponse).toList();
             LOG.trace("<--- findAllDivisions()");
             return ResponseEntity.ok(ApiResponse.ok(divisions));
         } catch (ServerErrorException ex) {
             LOG.trace("<--- findAllDivisions()");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(-1, "Server error"));
+        }
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<ApiResponse<PageCountResponse>> getDivisionPages(
+            @RequestParam(required = false) Integer count) {
+        LOG.trace("---> getDivisionPages()");
+        try {
+            long totalCount = divisionController.countDivisions();
+            int totalPages = count != null && count > 0
+                ? (int) Math.ceil((double) totalCount / count)
+                : (totalCount > 0 ? 1 : 0);
+            LOG.trace("<--- getDivisionPages()");
+            return ResponseEntity.ok(ApiResponse.ok(
+                PageCountResponse.builder().totalCount(totalCount).totalPages(totalPages).build()));
+        } catch (ServerErrorException ex) {
+            LOG.trace("<--- getDivisionPages()");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error(-1, "Server error"));
         }

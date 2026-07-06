@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface DivisionControllerInterface {
 
-    List<DivisionVO> findAllDivisions() throws ServerErrorException;
+    List<DivisionVO> findAllDivisions(Integer count, Integer page) throws ServerErrorException;
+
+    long countDivisions() throws ServerErrorException;
 
     DivisionVO getDivisionById(DivisionVO divisionVO) throws ServerErrorException, InvalidDataException;
 

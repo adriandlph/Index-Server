@@ -27,14 +27,25 @@ public class ProductController implements ProductControllerInterface {
     private ProjectRepository projectRepository;
 
     @Override
-    public List<ProductVO> findAllProducts() throws ServerErrorException {
+    public List<ProductVO> findAllProducts(Long divisionId, Long departmentId, Long projectId, Integer count, Integer page) throws ServerErrorException {
         LOG.debug("Finding all products");
         try {
-            return productRepository.findAll().stream()
+            return productRepository.findAll(divisionId, departmentId, projectId, count, page).stream()
                 .map(ProductController::Product2ProductVO)
                 .toList();
         } catch (Exception e) {
             LOG.error("Error finding all products", e);
+            throw new ServerErrorException(-1, "Server error");
+        }
+    }
+
+    @Override
+    public long countProducts(Long divisionId, Long departmentId, Long projectId) throws ServerErrorException {
+        LOG.debug("Counting all products");
+        try {
+            return productRepository.count(divisionId, departmentId, projectId);
+        } catch (Exception e) {
+            LOG.error("Error counting products", e);
             throw new ServerErrorException(-1, "Server error");
         }
     }

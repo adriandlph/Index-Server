@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface DepartmentControllerInterface {
 
-    List<DepartmentVO> findAllDepartments() throws ServerErrorException;
+    List<DepartmentVO> findAllDepartments(Long divisionId, Integer count, Integer page) throws ServerErrorException;
+
+    long countDepartments(Long divisionId) throws ServerErrorException;
 
     DepartmentVO getDepartmentById(DepartmentVO departmentVO) throws ServerErrorException, InvalidDataException;
 

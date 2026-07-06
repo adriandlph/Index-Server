@@ -32,7 +32,31 @@ public class ProductRepository {
     }
 
     public List<Product> findAll() {
-        return em.createQuery("SELECT p FROM Product p", Product.class).getResultList();
+        return findAll(null, null, null, null, null);
+    }
+
+    public List<Product> findAll(Long divisionId, Long departmentId, Long projectId, Integer count, Integer page) {
+        StringBuilder jpql = new StringBuilder("SELECT pr FROM Product pr WHERE 1=1");
+        if (projectId != null) {
+            jpql.append(" AND pr.project.id = :projectId");
+        } else if (departmentId != null) {
+            jpql.append(" AND pr.project.department.id = :departmentId");
+        } else if (divisionId != null) {
+            jpql.append(" AND pr.project.department.division.id = :divisionId");
+        }
+        var query = em.createQuery(jpql.toString(), Product.class);
+        if (projectId != null) {
+            query.setParameter("projectId", projectId);
+        } else if (departmentId != null) {
+            query.setParameter("departmentId", departmentId);
+        } else if (divisionId != null) {
+            query.setParameter("divisionId", divisionId);
+        }
+        if (count != null) {
+            query.setFirstResult(page != null ? count * page : 0);
+            query.setMaxResults(count);
+        }
+        return query.getResultList();
     }
 
     @Transactional
@@ -47,6 +71,27 @@ public class ProductRepository {
 
     public long count() {
         return em.createQuery("SELECT COUNT(p) FROM Product p", Long.class).getSingleResult();
+    }
+
+    public long count(Long divisionId, Long departmentId, Long projectId) {
+        if (divisionId == null && departmentId == null && projectId == null) return count();
+        StringBuilder jpql = new StringBuilder("SELECT COUNT(p) FROM Product p WHERE 1=1");
+        if (projectId != null) {
+            jpql.append(" AND p.project.id = :projectId");
+        } else if (departmentId != null) {
+            jpql.append(" AND p.project.department.id = :departmentId");
+        } else if (divisionId != null) {
+            jpql.append(" AND p.project.department.division.id = :divisionId");
+        }
+        var query = em.createQuery(jpql.toString(), Long.class);
+        if (projectId != null) {
+            query.setParameter("projectId", projectId);
+        } else if (departmentId != null) {
+            query.setParameter("departmentId", departmentId);
+        } else if (divisionId != null) {
+            query.setParameter("divisionId", divisionId);
+        }
+        return query.getSingleResult();
     }
 
     public boolean existsById(Long id) {

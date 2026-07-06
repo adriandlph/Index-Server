@@ -3,6 +3,7 @@ package com.adlph.internal.managment.index.server.api.rest;
 import com.adlph.internal.managment.index.server.api.rest.data.ApiResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.CreateDepartmentRequest;
 import com.adlph.internal.managment.index.server.api.rest.data.DepartmentResponse;
+import com.adlph.internal.managment.index.server.api.rest.data.PageCountResponse;
 import com.adlph.internal.managment.index.server.api.rest.data.UpdateDepartmentRequest;
 import com.adlph.internal.managment.index.server.controller.DepartmentControllerInterface;
 import com.adlph.internal.managment.index.server.data.vo.DepartmentVO;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,15 +37,38 @@ public class DepartmentRestApi {
     private DepartmentControllerInterface departmentController;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<DepartmentResponse>>> findAllDepartments() {
+    public ResponseEntity<ApiResponse<List<DepartmentResponse>>> findAllDepartments(
+            @RequestParam(required = false) Long divisionId,
+            @RequestParam(required = false) Integer count,
+            @RequestParam(required = false) Integer page) {
         LOG.trace("---> findAllDepartments()");
         try {
-            List<DepartmentResponse> departments = departmentController.findAllDepartments().stream()
+            List<DepartmentResponse> departments = departmentController.findAllDepartments(divisionId, count, page).stream()
                 .map(DepartmentRestApi::toResponse).toList();
             LOG.trace("<--- findAllDepartments()");
             return ResponseEntity.ok(ApiResponse.ok(departments));
         } catch (ServerErrorException ex) {
             LOG.trace("<--- findAllDepartments()");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error(-1, "Server error"));
+        }
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<ApiResponse<PageCountResponse>> getDepartmentPages(
+            @RequestParam(required = false) Long divisionId,
+            @RequestParam(required = false) Integer count) {
+        LOG.trace("---> getDepartmentPages()");
+        try {
+            long totalCount = departmentController.countDepartments(divisionId);
+            int totalPages = count != null && count > 0
+                ? (int) Math.ceil((double) totalCount / count)
+                : (totalCount > 0 ? 1 : 0);
+            LOG.trace("<--- getDepartmentPages()");
+            return ResponseEntity.ok(ApiResponse.ok(
+                PageCountResponse.builder().totalCount(totalCount).totalPages(totalPages).build()));
+        } catch (ServerErrorException ex) {
+            LOG.trace("<--- getDepartmentPages()");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error(-1, "Server error"));
         }

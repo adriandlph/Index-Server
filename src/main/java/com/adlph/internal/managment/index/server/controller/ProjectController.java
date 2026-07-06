@@ -27,14 +27,25 @@ public class ProjectController implements ProjectControllerInterface {
     private DepartmentRepository departmentRepository;
 
     @Override
-    public List<ProjectVO> findAllProjects() throws ServerErrorException {
+    public List<ProjectVO> findAllProjects(Long divisionId, Long departmentId, Integer count, Integer page) throws ServerErrorException {
         LOG.debug("Finding all projects");
         try {
-            return projectRepository.findAll().stream()
+            return projectRepository.findAll(divisionId, departmentId, count, page).stream()
                 .map(ProjectController::Project2ProjectVO)
                 .toList();
         } catch (Exception e) {
             LOG.error("Error finding all projects", e);
+            throw new ServerErrorException(-1, "Server error");
+        }
+    }
+
+    @Override
+    public long countProjects(Long divisionId, Long departmentId) throws ServerErrorException {
+        LOG.debug("Counting all projects");
+        try {
+            return projectRepository.count(divisionId, departmentId);
+        } catch (Exception e) {
+            LOG.error("Error counting projects", e);
             throw new ServerErrorException(-1, "Server error");
         }
     }

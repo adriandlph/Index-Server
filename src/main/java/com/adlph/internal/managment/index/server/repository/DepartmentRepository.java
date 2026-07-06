@@ -32,7 +32,23 @@ public class DepartmentRepository {
     }
 
     public List<Department> findAll() {
-        return em.createQuery("SELECT d FROM Department d", Department.class).getResultList();
+        return findAll(null, null, null);
+    }
+
+    public List<Department> findAll(Long divisionId, Integer count, Integer page) {
+        StringBuilder jpql = new StringBuilder("SELECT d FROM Department d WHERE 1=1");
+        if (divisionId != null) {
+            jpql.append(" AND d.division.id = :divisionId");
+        }
+        var query = em.createQuery(jpql.toString(), Department.class);
+        if (divisionId != null) {
+            query.setParameter("divisionId", divisionId);
+        }
+        if (count != null) {
+            query.setFirstResult(page != null ? count * page : 0);
+            query.setMaxResults(count);
+        }
+        return query.getResultList();
     }
 
     @Transactional
@@ -47,6 +63,13 @@ public class DepartmentRepository {
 
     public long count() {
         return em.createQuery("SELECT COUNT(d) FROM Department d", Long.class).getSingleResult();
+    }
+
+    public long count(Long divisionId) {
+        if (divisionId == null) return count();
+        return em.createQuery("SELECT COUNT(d) FROM Department d WHERE d.division.id = :divisionId", Long.class)
+            .setParameter("divisionId", divisionId)
+            .getSingleResult();
     }
 
     public boolean existsById(Long id) {
