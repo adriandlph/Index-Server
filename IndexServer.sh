@@ -29,6 +29,9 @@ case $option in
   3)
     echo "Running: mvn clean package"
     mvn clean package
+    mkdir -p dist
+    cp target/*.jar dist/
+    echo "JAR copied to dist/"
     ;;
   4)
     echo "Running: mvn spring-boot:run"
